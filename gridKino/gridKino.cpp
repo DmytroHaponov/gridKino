@@ -106,7 +106,13 @@ int main(int argc, char* argv[])
 
 	std::cout<<"answer is "<<ans<<std::endl;
 
-	std::string out_file_str = in_file_str.substr(0, in_file_str.rfind(".")) + "ANSWER.txt";
+	//! write answer to file
+	std::string out_file_str;
+	std::size_t in_found = in_file_str.rfind("in");
+	if (in_found != std::string::npos)
+		out_file_str = in_file_str.substr(0, in_found) + "out.txt";
+	else
+		out_file_str	 = in_file_str.substr(0, in_file_str.rfind(".")) + "ANSWER.txt";
 	std::cout << "trying to open and write to: " << out_file_str << std::endl;
 	std::ofstream o_stream(out_file_str);
 	if (!o_stream.is_open())
@@ -116,4 +122,3 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
-
