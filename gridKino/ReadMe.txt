@@ -1,40 +1,10 @@
-========================================================================
-    CONSOLE APPLICATION : gridKino Project Overview
-========================================================================
+Program logic:
+"Street" is a line of matrix. It's implemented as a vector filled with unique int's (each is +1 to previous). 
 
-AppWizard has created this gridKino application for you.
+Create a map to store FREE parts of streets. Map is used to conveniently address streets. 
+Each street is created as completely free once it is read from configure file for the first time (to create a reel on it). 
+Creating a reel means taking difference between a free part of the street and current reel. This dirrerence is written to map, replacing previous value of this free part of the street.
+Such, completely free streets are not contained in folder (they are completely free for a short period of time between street initialization and taking defference with the reel on it, resulting difference is what is stored).
+Whenever a new reel is read from configure file, the difference is taken with the free part of the street, no matter how many reels are already on that street.
 
-This file contains a summary of what you will find in each of the files that
-make up your gridKino application.
-
-
-gridKino.vcxproj
-    This is the main project file for VC++ projects generated using an Application Wizard.
-    It contains information about the version of Visual C++ that generated the file, and
-    information about the platforms, configurations, and project features selected with the
-    Application Wizard.
-
-gridKino.vcxproj.filters
-    This is the filters file for VC++ projects generated using an Application Wizard. 
-    It contains information about the association between the files in your project 
-    and the filters. This association is used in the IDE to show grouping of files with
-    similar extensions under a specific node (for e.g. ".cpp" files are associated with the
-    "Source Files" filter).
-
-gridKino.cpp
-    This is the main application source file.
-
-/////////////////////////////////////////////////////////////////////////////
-Other standard files:
-
-StdAfx.h, StdAfx.cpp
-    These files are used to build a precompiled header (PCH) file
-    named gridKino.pch and a precompiled types file named StdAfx.obj.
-
-/////////////////////////////////////////////////////////////////////////////
-Other notes:
-
-AppWizard uses "TODO:" comments to indicate parts of the source code you
-should add to or customize.
-
-/////////////////////////////////////////////////////////////////////////////
+Once all configure file is processed, total amount of free cells is simply a sum of sizes of all free parts of streets in the map + all cells of completely free streets (that have no reels on them).

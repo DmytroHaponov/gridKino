@@ -21,6 +21,8 @@ Purpose: find empty cells in matrix
 #include <string>
 #include <stdio.h>
 
+//! interpretation of city matrix, it has ONLY parts of city that have reels
+//! which is important considering n < 10^9 while k < 10^3
 typedef std::map<int, std::vector<int>> MinusReelMap;
 
 //! creates street in line_minus_reels_map by filling vector of size m with int's in order
@@ -74,7 +76,6 @@ bool process_line_from_file (std::string& line, int& first_int, int& sec_int, in
 
 //! main idea is here: take difference between street and reel,
 //! storing only free cells.
-
 //! REMINDER -- streets WO reels, that is completely free streets, are not stored!
 void process_reel (MinusReelMap& map, int& current_street, int& street_begin, int& street_end)
 {
@@ -118,9 +119,6 @@ int main(int argc, char* argv[])
 
 	//! street is line in matrix of "city"
 	int current_street=0, street_begin=0, street_end=0;
-
-	//! interpretation of city matrix, it has ONLY parts of city that have reels
-	//! which is important considering n < 10^9 while k < 10^3
 	MinusReelMap line_minus_reels_map;
 
 	//! line read from file
