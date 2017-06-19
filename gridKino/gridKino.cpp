@@ -21,13 +21,13 @@ Purpose: find empty cells in matrix
 #include <string>
 #include <stdio.h>
 
-//! interpretation of city matrix, it has ONLY parts of city that have reels
+//! interpretation of city matrix, it has ONLY parts of city that have rails
 //! which is important considering n < 10^9 while k < 10^3
-typedef std::map<int, std::vector<int>> MinusReelMap;
+typedef std::map<int, std::vector<int>> MinusRailMap;
 
-//! creates street in line_minus_reels_map by filling vector of size m with int's in order
+//! creates street in MinusRailMap by filling vector of size m with int's in order
 //! of arithmetic progression (each next +1)
-void add_street (MinusReelMap& map, const int& street_length, const int& cur_street)
+void add_street (MinusRailMap& map, const int& street_length, const int& cur_street)
 {
 	std::vector<int> street(street_length);
 	std::iota(street.begin(), street.end(), 1); //! numeration starts from 1
@@ -74,25 +74,25 @@ bool process_line_from_file (std::string& line, int& first_int, int& sec_int, in
 	return 1;
 }
 
-//! main idea is here: take difference between street and reel,
+//! main idea is here: take difference between street and rail,
 //! storing only free cells.
-//! REMINDER -- streets WO reels, that is completely free streets, are not stored!
-void process_reel (MinusReelMap& map, int& current_street, int& street_begin, int& street_end)
+//! REMINDER -- streets WO rails, that is completely free streets, are not stored!
+void process_rail (MinusRailMap& map, int& current_street, int& street_begin, int& street_end)
 {
-	std::vector<int> current_reel(street_end - street_begin + 1), 
-		diff_vec; //! vector to store difference between street and reel
-	std::iota(current_reel.begin(), current_reel.end(), street_begin);
+	std::vector<int> current_rail(street_end - street_begin + 1), 
+		diff_vec; //! vector to store difference between street and rail
+	std::iota(current_rail.begin(), current_rail.end(), street_begin);
 
 	std::set_difference(map.at(current_street).begin(), 
 						map.at(current_street).end(),
-						current_reel.begin(),
-						current_reel.end(),
+						current_rail.begin(),
+						current_rail.end(),
 						std::back_inserter(diff_vec));
 	map[current_street] = std::move(diff_vec);
 
 #ifdef _DEBUG
-	std::cout<<"created reel at "<<current_street<<std::endl;
-	std::for_each(current_reel.begin(), current_reel.end(), [](const int& n) { std::cout<<n<<" "; });
+	std::cout<<"created rail at "<<current_street<<std::endl;
+	std::for_each(current_rail.begin(), current_rail.end(), [](const int& n) { std::cout<<n<<" "; });
 	std::cout<<std::endl;
 
 	std::cout<<"resulting difference is ";
@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
 
 	//! street is line in matrix of "city"
 	int current_street=0, street_begin=0, street_end=0;
-	MinusReelMap line_minus_reels_map;
+	MinusRailMap line_minus_rails_map;
 
 	//! line read from file
 	std::string line_from_file;
@@ -131,15 +131,15 @@ int main(int argc, char* argv[])
 		return 1;
 	line_number++;
 
-	//! process all reels
+	//! process all rails
 	while(getline(in_stream, line_from_file)) 
 	{
 		if(!process_line_from_file(line_from_file, current_street, street_begin, street_end, line_number))
 			return 1;
 		line_number++;
-		if (!line_minus_reels_map.count(current_street))
-			add_street(line_minus_reels_map, m, current_street);
-		process_reel(line_minus_reels_map, current_street, street_begin, street_end);
+		if (!line_minus_rails_map.count(current_street))
+			add_street(line_minus_rails_map, m, current_street);
+		process_rail(line_minus_rails_map, current_street, street_begin, street_end);
 	}
 
 	if (in_stream.bad())
@@ -147,13 +147,13 @@ int main(int argc, char* argv[])
 	in_stream.close();
 
 	int ans=0;
-	for (auto& map_pair : line_minus_reels_map)
+	for (auto& map_pair : line_minus_rails_map)
 		ans += map_pair.second.size();
 
-	//! check streets WO reels
-	int streets_with_reels = line_minus_reels_map.size();
-	if (n > streets_with_reels)
-		ans += m * (n - streets_with_reels); //! add all cells of streets WO reels
+	//! check streets WO rails
+	int streets_with_rails = line_minus_rails_map.size();
+	if (n > streets_with_rails)
+		ans += m * (n - streets_with_rails); //! add all cells of streets WO rails
 
 	std::cout<<"answer is "<<ans<<std::endl;
 
